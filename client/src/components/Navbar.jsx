@@ -12,10 +12,10 @@ const Navbar = () => {
                     <span className="brand-name">BrandCheck AI</span>
                 </div>
 
-                 
+
 
                 <div className="nav-actions">
-                    <a href="https://github.com/MR-Shivam-Tiwari" target="_blank" rel="noopener noreferrer" className="nav-icon-btn">
+                    <a href="https://github.com/MR-Shivam-Tiwari/BrandCheck-AI" target="_blank" rel="noopener noreferrer" className="nav-icon-btn">
                         <Github size={20} />
                     </a>
                     <button className="btn-nav-primary">
