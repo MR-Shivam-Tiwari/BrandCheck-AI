@@ -1,9 +1,4 @@
-#!/usr/bin/env node
-
-/**
- * Comprehensive API Key Diagnostic Tool
- * Tests different models and API versions
- */
+ 
 
 require('dotenv').config();
 const { GoogleGenerativeAI } = require('@google/generative-ai');
@@ -17,10 +12,7 @@ const colors = {
     cyan: '\x1b[36m',
 };
 
-console.log(`\n${colors.cyan}╔════════════════════════════════════════════╗${colors.reset}`);
-console.log(`${colors.cyan}║  🔬 Gemini API Comprehensive Diagnostic   ║${colors.reset}`);
-console.log(`${colors.cyan}╚════════════════════════════════════════════╝${colors.reset}\n`);
-
+ 
 async function testModel(genAI, modelName) {
     try {
         console.log(`${colors.yellow}🔄 Testing: ${modelName}${colors.reset}`);
@@ -37,12 +29,12 @@ async function testModel(genAI, modelName) {
         const response = await result.response;
         const text = response.text();
 
-        console.log(`${colors.green}✅ SUCCESS!${colors.reset}`);
+        console.log(`${colors.green} SUCCESS!${colors.reset}`);
         console.log(`   Response: "${text.trim()}"`);
         console.log('');
         return { model: modelName, status: 'success', response: text.trim() };
     } catch (error) {
-        console.log(`${colors.red}❌ FAILED${colors.reset}`);
+        console.log(`${colors.red} FAILED${colors.reset}`);
         console.log(`   Error: ${error.message.substring(0, 100)}...`);
 
         let errorType = 'Unknown';
@@ -60,7 +52,7 @@ async function testModel(genAI, modelName) {
 async function main() {
     // Check API key
     if (!process.env.GEMINI_API_KEY) {
-        console.log(`${colors.red}❌ ERROR: GEMINI_API_KEY not found in .env file${colors.reset}\n`);
+        console.log(`${colors.red} ERROR: GEMINI_API_KEY not found in .env file${colors.reset}\n`);
         process.exit(1);
     }
 
@@ -113,21 +105,18 @@ async function main() {
         }
     }
 
-    // Summary
-    console.log(`${colors.cyan}━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━${colors.reset}`);
-    console.log(`${colors.blue}📊 SUMMARY${colors.reset}\n`);
-
+ 
     const successes = results.filter(r => r.status === 'success');
     const failures = results.filter(r => r.status === 'failed');
 
     if (successes.length > 0) {
-        console.log(`${colors.green}✅ Working Models (${successes.length}):${colors.reset}`);
+        console.log(`${colors.green} Working Models (${successes.length}):${colors.reset}`);
         successes.forEach(s => {
             console.log(`   - ${s.model}`);
         });
         console.log('');
 
-        console.log(`${colors.green}🎉 GOOD NEWS: Your API key is working!${colors.reset}\n`);
+        console.log(`${colors.green} GOOD NEWS: Your API key is working!${colors.reset}\n`);
         console.log(`${colors.yellow}📝 Recommendation:${colors.reset}`);
         console.log(`   Use this model in your code: ${colors.cyan}${successes[0].model}${colors.reset}\n`);
 
@@ -136,7 +125,7 @@ async function main() {
         console.log(`   Change line ~30 to:`);
         console.log(`   ${colors.cyan}model: '${successes[0].model}'${colors.reset}\n`);
     } else {
-        console.log(`${colors.red}❌ No working models found (0/${modelsToTest.length})${colors.reset}\n`);
+        console.log(`${colors.red} No working models found (0/${modelsToTest.length})${colors.reset}\n`);
 
         // Analyze errors
         const quotaErrors = failures.filter(f => f.error.includes('Quota'));
@@ -151,12 +140,12 @@ async function main() {
         console.log('');
 
         if (quotaErrors.length > 0) {
-            console.log(`${colors.red}⚠️  Your API key has quota limit = 0${colors.reset}`);
+            console.log(`${colors.red}  Your API key has quota limit = 0${colors.reset}`);
             console.log(`${colors.yellow}This means your API key is not properly activated.${colors.reset}\n`);
         }
 
         if (notFoundErrors.length === failures.length) {
-            console.log(`${colors.red}⚠️  All models returned 404 Not Found${colors.reset}`);
+            console.log(`${colors.red}  All models returned 404 Not Found${colors.reset}`);
             console.log(`${colors.yellow}This usually means:${colors.reset}`);
             console.log(`   1. Your API key doesn't have access to Gemini API`);
             console.log(`   2. The API might not be enabled in your Google Cloud project`);
@@ -176,6 +165,6 @@ async function main() {
 }
 
 main().catch(error => {
-    console.error(`${colors.red}❌ Fatal error:${colors.reset}`, error);
+    console.error(`${colors.red} Fatal error:${colors.reset}`, error);
     process.exit(1);
 });

@@ -126,7 +126,7 @@ const ResultsTable = ({ results }) => {
                                                 whiteSpace: 'pre-wrap'
                                             }}>
                                                 <strong style={{ display: 'block', marginBottom: '10px', color: '#fff' }}>
-                                                    {result.error ? '⚠️ Canned Response:' : 'Response:'}
+                                                    {result.error ? ' Canned Response:' : 'Response:'}
                                                 </strong>
                                                 {result.rawResponse}
                                             </div>

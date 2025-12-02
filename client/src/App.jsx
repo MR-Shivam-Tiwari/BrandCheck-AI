@@ -47,7 +47,7 @@ function App() {
       setResults([cannedResult, ...results]);
 
       // Show user-friendly notification (no intrusive alert)
-      console.log("✅ App still working - showing canned response");
+      console.log(" App still working - showing canned response");
     } finally {
       setIsLoading(false);
     }

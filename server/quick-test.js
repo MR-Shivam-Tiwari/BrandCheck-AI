@@ -27,21 +27,19 @@ const req = http.request(options, (res) => {
         try {
             const result = JSON.parse(data);
 
-            console.log('━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━');
-            console.log('📊 TEST RESULTS');
-            console.log('━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n');
+          
 
             // Status
             if (result.finalStatus === 'success') {
-                console.log('✅ STATUS: SUCCESS\n');
-                console.log(`🎉 Your API key is working!`);
+                console.log(' STATUS: SUCCESS\n');
+                console.log(` Your API key is working!`);
                 console.log(`📦 Using model: ${result.workingModel}\n`);
                 console.log(`You can now use the application!`);
                 console.log(`Test with:`);
                 console.log(`  - Prompt: "Give a list of best marketing analytics tools"`);
                 console.log(`  - Brand: "Matomo"\n`);
             } else {
-                console.log('❌ STATUS: FAILED\n');
+                console.log(' STATUS: FAILED\n');
                 console.log(`${result.recommendation}\n`);
 
                 if (result.apiKeyPreview && result.apiKeyPreview !== 'not set') {
@@ -52,7 +50,7 @@ const req = http.request(options, (res) => {
                 if (result.modelsTest && result.modelsTest.length > 0) {
                     console.log('📋 Models Tested:');
                     result.modelsTest.forEach((test, idx) => {
-                        const icon = test.status === 'success' ? '✅' : '❌';
+                        const icon = test.status === 'success' ? '' : '';
                         console.log(`  ${idx + 1}. ${icon} ${test.model}: ${test.errorType || test.status}`);
                     });
                     console.log('');
@@ -70,19 +68,17 @@ const req = http.request(options, (res) => {
                 console.log('     (Replace GEMINI_API_KEY with new key)');
                 console.log('  6. Restart server: npm start');
                 console.log('  7. Run this test again: node quick-test.js\n');
-            }
-
-            console.log('━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n');
+            } 
 
         } catch (error) {
-            console.error('❌ Error parsing response:', error.message);
+            console.error(' Error parsing response:', error.message);
             console.log('Raw response:', data);
         }
     });
 });
 
 req.on('error', (error) => {
-    console.error('❌ ERROR: Could not connect to server\n');
+    console.error(' ERROR: Could not connect to server\n');
     console.log('Make sure your server is running:');
     console.log('  cd server');
     console.log('  npm start\n');

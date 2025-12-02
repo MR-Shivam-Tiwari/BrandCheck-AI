@@ -10,7 +10,7 @@ const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
     try {
         const models = await genAI.listModels();
 
-        console.log('✅ Found', models.length, 'models:\n');
+        console.log(' Found', models.length, 'models:\n');
 
         models.forEach((model, index) => {
             console.log(`${index + 1}. ${model.name}`);
@@ -21,7 +21,7 @@ const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
 
         console.log('\n💡 Use the model name without the "models/" prefix in your code.\n');
     } catch (error) {
-        console.error('❌ Error listing models:', error.message);
+        console.error(' Error listing models:', error.message);
 
         if (error.message.includes('API_KEY_INVALID')) {
             console.error('\n💡 Your API key appears to be invalid.');

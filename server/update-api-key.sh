@@ -7,7 +7,7 @@ echo "Please enter your NEW Gemini API key:"
 read -r api_key
 
 if [ -z "$api_key" ]; then
-    echo "❌ No API key provided. Exiting."
+    echo " No API key provided. Exiting."
     exit 1
 fi
 
@@ -21,7 +21,7 @@ PORT=8000
 EOL
 
 echo ""
-echo "✅ API key updated in .env file!"
+echo " API key updated in .env file!"
 echo ""
 echo "Now testing the API key..."
 echo ""
@@ -41,17 +41,17 @@ async function test() {
       const model = genAI.getGenerativeModel({ model: modelName });
       const result = await model.generateContent('Say hello');
       const response = await result.response;
-      console.log(\`✅ SUCCESS! Model \${modelName} is working!\`);
+      console.log(\` SUCCESS! Model \${modelName} is working!\`);
       console.log('Response:', response.text());
       console.log('');
-      console.log('✅ Your API key is configured correctly!');
+      console.log(' Your API key is configured correctly!');
       return;
     } catch (error) {
-      console.log(\`   ❌ \${modelName} failed\`);
+      console.log(\`    \${modelName} failed\`);
     }
   }
   console.log('');
-  console.log('❌ All models failed. Please check:');
+  console.log(' All models failed. Please check:');
   console.log('   1. API key is valid');
   console.log('   2. API key has proper permissions');
   console.log('   3. Visit: https://aistudio.google.com/apikey');

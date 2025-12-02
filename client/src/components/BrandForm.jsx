@@ -27,7 +27,7 @@ const BrandForm = ({ onRun, isLoading }) => {
         } catch (error) {
             setTestResult({
                 finalStatus: 'error',
-                recommendation: error.response?.data?.recommendation || '❌ Failed to connect to server',
+                recommendation: error.response?.data?.recommendation || ' Failed to connect to server',
                 error: error.message
             });
         } finally {
@@ -71,7 +71,7 @@ const BrandForm = ({ onRun, isLoading }) => {
                         </>
                     ) : (
                         <>
-                             
+
                             Test Gemini API Key
                         </>
                     )}
@@ -87,7 +87,7 @@ const BrandForm = ({ onRun, isLoading }) => {
                         fontSize: '14px'
                     }}>
                         <div style={{ fontWeight: '600', marginBottom: '8px', color: testResult.finalStatus === 'success' ? '#10b981' : '#ef4444' }}>
-                            {testResult.finalStatus === 'success' ? '✅ SUCCESS' : '❌ FAILED'}
+                            {testResult.finalStatus === 'success' ? ' SUCCESS' : ' FAILED'}
                         </div>
                         <div style={{ marginBottom: '8px', whiteSpace: 'pre-wrap' }}>
                             {testResult.recommendation}

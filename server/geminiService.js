@@ -1,8 +1,7 @@
 const axios = require('axios');
 const fuzz = require('fuzzball');
 
-// ===== CONFIGURATION =====
-// Model: gemini-2.0-flash (Fast, efficient, and available with current API key)
+ 
 // This is one of the most cost-effective models currently available
 const GEMINI_MODEL = 'gemini-2.0-flash';
 
@@ -11,14 +10,7 @@ const TEMPERATURE = 0.5;
 
 // Fuzzy matching threshold (85% similarity)
 const FUZZY_THRESHOLD = 85;
-// =========================
-
-/**
- * Calls Gemini API exactly like react-ai-tool does
- * Uses the full URL approach instead of SDK
- * Model: gemini-1.5-flash (least expensive)
- * Temperature: 0.5
- */
+ 
 async function callGeminiAPI(prompt) {
     // Build API URL with least expensive model
     const apiUrl = process.env.GEMINI_API_URL ||
@@ -56,23 +48,18 @@ async function callGeminiAPI(prompt) {
         // Parse response exactly like react-ai-tool (App.jsx line 50)
         if (response.data && response.data.candidates && response.data.candidates.length > 0) {
             const text = response.data.candidates[0].content.parts[0].text;
-            console.log(`✅ Success! Response received (${text.length} characters)`);
+            console.log(` Success! Response received (${text.length} characters)`);
             return text;
         } else {
             throw new Error('Invalid response structure from Gemini API');
         }
     } catch (error) {
-        console.error(`❌ API call failed:`, error.response?.data?.error?.message || error.message);
+        console.error(` API call failed:`, error.response?.data?.error?.message || error.message);
         throw error;
     }
 }
 
-/**
- * Checks if a brand name is mentioned in a text using fuzzy matching
- * @param {string} text - The text to search in
- * @param {string} brand - The brand name to search for
- * @returns {boolean} - True if brand is found (exact or fuzzy match)
- */
+ 
 function isBrandMentioned(text, brand) {
     const lowerText = text.toLowerCase();
     const lowerBrand = brand.toLowerCase();
@@ -121,13 +108,7 @@ function isBrandMentioned(text, brand) {
     return false;
 }
 
-/**
- * Checks if a brand is mentioned in the Gemini response for a given prompt.
- * Uses the exact same approach as react-ai-tool
- * @param {string} prompt - The user's prompt.
- * @param {string} brand - The brand to check for.
- * @returns {Promise<Object>} - Result containing mention status, position, and the raw response.
- */
+ 
 async function checkBrandMention(prompt, brand) {
     try {
         console.log('\n🔍 Checking brand mention...');
@@ -143,7 +124,7 @@ async function checkBrandMention(prompt, brand) {
         let position = null;
 
         if (mentioned) {
-            console.log(`✅ Brand "${brand}" is mentioned!`);
+            console.log(` Brand "${brand}" is mentioned!`);
 
             // Attempt to determine position in a list
             const lines = text.split('\n');
@@ -166,14 +147,13 @@ async function checkBrandMention(prompt, brand) {
                 }
             }
 
-            // If not found in a structured list but mentioned, default to 1
-            // This handles cases where the brand is mentioned in paragraphs
+          
             if (!foundInList) {
                 position = 1;
                 console.log(`📍 Position set to: ${position} (not in a numbered list)`);
             }
         } else {
-            console.log(`❌ Brand "${brand}" is NOT mentioned`);
+            console.log(` Brand "${brand}" is NOT mentioned`);
         }
 
         return {
@@ -183,7 +163,7 @@ async function checkBrandMention(prompt, brand) {
         };
 
     } catch (error) {
-        console.error("\n❌ ========== GEMINI API ERROR ==========");
+        console.error("\n ========== GEMINI API ERROR ==========");
         console.error("Error Type:", error.constructor.name);
         console.error("Error Message:", error.message);
 

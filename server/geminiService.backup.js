@@ -18,7 +18,7 @@ const MODELS_TO_TRY = [
 
 async function findWorkingModel() {
     if (!process.env.GEMINI_API_KEY) {
-        console.error('⚠️  WARNING: GEMINI_API_KEY is not set in environment variables!');
+        console.error('  WARNING: GEMINI_API_KEY is not set in environment variables!');
         console.error('Please add GEMINI_API_KEY to your .env file');
         throw new Error('GEMINI_API_KEY is not configured');
     }
@@ -40,12 +40,12 @@ async function findWorkingModel() {
             const result = await testModel.generateContent('Say "test" in one word');
             await result.response;
 
-            console.log(`✅ Successfully connected using model: ${modelName}`);
+            console.log(` Successfully connected using model: ${modelName}`);
             workingModelName = modelName;
             model = testModel;
             return testModel;
         } catch (error) {
-            console.log(`❌ Model ${modelName} failed: ${error.message}`);
+            console.log(` Model ${modelName} failed: ${error.message}`);
             continue;
         }
     }
@@ -65,12 +65,7 @@ async function getModel() {
 // Fuzzy matching threshold (85% similarity)
 const FUZZY_THRESHOLD = 85;
 
-/**
- * Checks if a brand name is mentioned in a text using fuzzy matching
- * @param {string} text - The text to search in
- * @param {string} brand - The brand name to search for
- * @returns {boolean} - True if brand is found (exact or fuzzy match)
- */
+ 
 function isBrandMentioned(text, brand) {
     const lowerText = text.toLowerCase();
     const lowerBrand = brand.toLowerCase();
@@ -119,12 +114,7 @@ function isBrandMentioned(text, brand) {
     return false;
 }
 
-/**
- * Checks if a brand is mentioned in the Gemini response for a given prompt.
- * @param {string} prompt - The user's prompt.
- * @param {string} brand - The brand to check for.
- * @returns {Promise<Object>} - Result containing mention status, position, and the raw response.
- */
+ 
 async function checkBrandMention(prompt, brand) {
     try {
         const model = getModel(); // Get the lazily-initialized model
@@ -170,7 +160,7 @@ async function checkBrandMention(prompt, brand) {
         };
 
     } catch (error) {
-        console.error("\n❌ ========== GEMINI API ERROR ==========");
+        console.error("\n ========== GEMINI API ERROR ==========");
         console.error("Error Type:", error.constructor.name);
         console.error("Error Message:", error.message);
         console.error("Error Status:", error.status || 'N/A');

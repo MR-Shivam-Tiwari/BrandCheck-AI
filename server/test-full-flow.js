@@ -1,9 +1,4 @@
-#!/usr/bin/env node
-
-/**
- * Complete test script for the Brand Mention Checker
- * Tests API connection, backend service, and sample queries
- */
+ 
 
 require('dotenv').config();
 const { checkBrandMention } = require('./geminiService');
@@ -22,9 +17,7 @@ function log(color, symbol, message) {
 }
 
 async function testCase(testNum, prompt, brand) {
-    console.log(`\n${colors.cyan}━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━${colors.reset}`);
-    console.log(`${colors.blue}📋 Test Case ${testNum}${colors.reset}`);
-    console.log(`${colors.cyan}━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━${colors.reset}`);
+  
     console.log(`Prompt: "${prompt}"`);
     console.log(`Brand: "${brand}"`);
     console.log('');
@@ -34,12 +27,12 @@ async function testCase(testNum, prompt, brand) {
         const result = await checkBrandMention(prompt, brand);
 
         if (result.error) {
-            log(colors.red, '❌', 'API returned an error');
+            log(colors.red, '', 'API returned an error');
             console.log('\nResponse:', JSON.stringify(result, null, 2));
             return false;
         }
 
-        log(colors.green, '✅', 'Request successful!');
+        log(colors.green, '', 'Request successful!');
         console.log('');
         console.log(`${colors.green}Results:${colors.reset}`);
         console.log(`  • Mentioned: ${result.mentioned ? colors.green + 'YES' : colors.red + 'NO'}${colors.reset}`);
@@ -52,28 +45,25 @@ async function testCase(testNum, prompt, brand) {
 
         return true;
     } catch (error) {
-        log(colors.red, '❌', `Test failed: ${error.message}`);
+        log(colors.red, '', `Test failed: ${error.message}`);
         console.error(error);
         return false;
     }
 }
 
 async function main() {
-    console.log(`\n${colors.cyan}╔═══════════════════════════════════════════════╗${colors.reset}`);
-    console.log(`${colors.cyan}║  🧪 Brand Mention Checker - Full Test Suite  ║${colors.reset}`);
-    console.log(`${colors.cyan}╚═══════════════════════════════════════════════╝${colors.reset}\n`);
-
+   
     // Check API key
     log(colors.blue, '🔍', 'Checking configuration...');
     if (!process.env.GEMINI_API_KEY) {
-        log(colors.red, '❌', 'GEMINI_API_KEY not found in .env file');
+        log(colors.red, '', 'GEMINI_API_KEY not found in .env file');
         console.log('\nPlease set your API key in the .env file:');
         console.log('  GEMINI_API_KEY=your_api_key_here\n');
         process.exit(1);
     }
 
     const keyPreview = process.env.GEMINI_API_KEY.substring(0, 20) + '...';
-    log(colors.green, '✅', `API Key loaded: ${keyPreview}`);
+    log(colors.green, '', `API Key loaded: ${keyPreview}`);
 
     // Test cases from requirements
     const tests = [
@@ -104,22 +94,19 @@ async function main() {
         }
     }
 
-    // Summary
-    console.log(`\n${colors.cyan}━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━${colors.reset}`);
-    console.log(`${colors.blue}📊 Test Summary${colors.reset}`);
-    console.log(`${colors.cyan}━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━${colors.reset}`);
-    log(colors.green, '✅', `Passed: ${passed}/${tests.length}`);
+    
+    log(colors.green, '', `Passed: ${passed}/${tests.length}`);
     if (failed > 0) {
-        log(colors.red, '❌', `Failed: ${failed}/${tests.length}`);
+        log(colors.red, '', `Failed: ${failed}/${tests.length}`);
     }
     console.log('');
 
     if (passed === tests.length) {
-        log(colors.green, '🎉', 'All tests passed! Your API is working correctly.');
+        log(colors.green, '', 'All tests passed! Your API is working correctly.');
         console.log('\nYou can now start your server:');
         console.log(`  ${colors.cyan}npm start${colors.reset}\n`);
     } else {
-        log(colors.yellow, '⚠️', 'Some tests failed. Please check your API key and try again.');
+        log(colors.yellow, '', 'Some tests failed. Please check your API key and try again.');
         console.log('\nTroubleshooting steps:');
         console.log('  1. Verify your API key at https://aistudio.google.com/apikey');
         console.log('  2. Make sure you have quota available');
@@ -130,6 +117,6 @@ async function main() {
 
 // Run tests
 main().catch(error => {
-    console.error(`\n${colors.red}❌ Fatal error:${colors.reset}`, error);
+    console.error(`\n${colors.red} Fatal error:${colors.reset}`, error);
     process.exit(1);
 });

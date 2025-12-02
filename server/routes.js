@@ -92,7 +92,7 @@ router.get('/test-gemini-key', async (req, res) => {
             if (modelTest.status === 'success') {
                 testResults.finalStatus = 'success';
                 testResults.workingModel = modelName;
-                testResults.recommendation = `✅ API key is working! Using model: ${modelName}`;
+                testResults.recommendation = ` API key is working! Using model: ${modelName}`;
                 break;
             }
 
@@ -110,13 +110,13 @@ router.get('/test-gemini-key', async (req, res) => {
             const notFoundErrors = testResults.modelsTest.filter(m => m.errorType === 'Model not found');
 
             if (quotaErrors.length > 0) {
-                testResults.recommendation = '❌ API key has quota limit = 0. Get a NEW API key from https://aistudio.google.com/apikey';
+                testResults.recommendation = ' API key has quota limit = 0. Get a NEW API key from https://aistudio.google.com/apikey';
             } else if (authErrors.length > 0) {
-                testResults.recommendation = '❌ Invalid API key. Check your GEMINI_API_KEY in .env file';
+                testResults.recommendation = ' Invalid API key. Check your GEMINI_API_KEY in .env file';
             } else if (notFoundErrors.length === modelsToTest.length) {
-                testResults.recommendation = '❌ All models returned 404. Your API key may not have access to these models. Get a NEW key.';
+                testResults.recommendation = ' All models returned 404. Your API key may not have access to these models. Get a NEW key.';
             } else {
-                testResults.recommendation = '❌ Unknown error. Check the error details below.';
+                testResults.recommendation = ' Unknown error. Check the error details below.';
             }
         }
 
@@ -125,7 +125,7 @@ router.get('/test-gemini-key', async (req, res) => {
     } catch (error) {
         testResults.finalStatus = 'error';
         testResults.error = error.message;
-        testResults.recommendation = '❌ Unexpected error occurred. Check server logs.';
+        testResults.recommendation = ' Unexpected error occurred. Check server logs.';
         return res.status(500).json(testResults);
     }
 });

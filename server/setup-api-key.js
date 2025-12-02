@@ -10,10 +10,7 @@ const rl = readline.createInterface({
   output: process.stdout
 });
 
-console.log('\n╔═══════════════════════════════════════════════════════════╗');
-console.log('║     Gemini API Key Setup & Test Utility                ║');
-console.log('╚═══════════════════════════════════════════════════════════╝\n');
-
+ 
 console.log('📋 Instructions:');
 console.log('1. Go to: https://aistudio.google.com/apikey');
 console.log('2. Sign in with your Google account');
@@ -25,18 +22,18 @@ rl.question('🔑 Paste your NEW API key here: ', async (apiKey) => {
   const trimmedKey = apiKey.trim();
 
   if (!trimmedKey) {
-    console.log('\n❌ No API key provided. Exiting.\n');
+    console.log('\n No API key provided. Exiting.\n');
     rl.close();
     return;
   }
 
   if (!trimmedKey.startsWith('AIza')) {
-    console.log('\n⚠️  WARNING: API key should start with "AIza"');
+    console.log('\n  WARNING: API key should start with "AIza"');
     console.log('   Your key starts with:', trimmedKey.substring(0, 10));
     console.log('   Make sure you copied the correct key!\n');
   }
 
-  console.log('\n✅ API key received');
+  console.log('\n API key received');
   console.log('📝 Key starts with:', trimmedKey.substring(0, 20) + '...\n');
 
   // Test the API key
@@ -59,17 +56,17 @@ rl.question('🔑 Paste your NEW API key here: ', async (apiKey) => {
       const response = await result.response;
       const text = response.text();
 
-      console.log(`   ✅ SUCCESS with ${modelName}!`);
+      console.log(`    SUCCESS with ${modelName}!`);
       console.log(`   📥 Response: ${text}\n`);
       workingModel = modelName;
       break;
     } catch (error) {
-      console.log(`   ❌ Failed with ${modelName}`);
+      console.log(`    Failed with ${modelName}`);
     }
   }
 
   if (!workingModel) {
-    console.log('\n❌ ERROR: API key is not working with any model!');
+    console.log('\n ERROR: API key is not working with any model!');
     console.log('\n💡 Possible issues:');
     console.log('   1. The API key is invalid or expired');
     console.log('   2. The API key doesn\'t have access to Gemini models');
@@ -87,9 +84,9 @@ rl.question('🔑 Paste your NEW API key here: ', async (apiKey) => {
 
   try {
     fs.writeFileSync(envPath, envContent);
-    console.log('✅ .env file updated successfully!\n');
+    console.log(' .env file updated successfully!\n');
   } catch (error) {
-    console.log('❌ Error writing .env file:', error.message);
+    console.log(' Error writing .env file:', error.message);
     console.log('\n📝 Please manually update your .env file:');
     console.log(`   GEMINI_API_KEY=${trimmedKey}`);
     console.log('   PORT=8000\n');
@@ -111,19 +108,16 @@ rl.question('🔑 Paste your NEW API key here: ', async (apiKey) => {
     );
 
     fs.writeFileSync(servicePath, serviceContent);
-    console.log('✅ geminiService.js updated successfully!\n');
+    console.log(' geminiService.js updated successfully!\n');
   } catch (error) {
-    console.log('⚠️  Could not update geminiService.js automatically');
+    console.log('  Could not update geminiService.js automatically');
     console.log(`   Please manually set model to: '${workingModel}'\n`);
   }
+ 
 
-  console.log('╔═══════════════════════════════════════════════════════════╗');
-  console.log('║                 🎉 SETUP COMPLETE! 🎉                    ║');
-  console.log('╚═══════════════════════════════════════════════════════════╝\n');
-
-  console.log('✅ Your API key is working!');
-  console.log(`✅ Using model: ${workingModel}`);
-  console.log('✅ Configuration saved to .env\n');
+  console.log(' Your API key is working!');
+  console.log(` Using model: ${workingModel}`);
+  console.log(' Configuration saved to .env\n');
 
   console.log('🚀 Next steps:');
   console.log('   1. Restart your backend server:');
