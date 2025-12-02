@@ -21,7 +21,7 @@ const BrandForm = ({ onRun, isLoading }) => {
         setTestResult(null);
 
         try {
-            const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:8000/api';
+            const API_URL = import.meta.env.VITE_API_URL || 'https://brand-check-ai-backend.vercel.app//api';
             const response = await axios.get(`${API_URL}/test-gemini-key`);
             setTestResult(response.data);
         } catch (error) {

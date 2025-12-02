@@ -1,29 +1,44 @@
 const axios = require('axios');
 const fuzz = require('fuzzball');
 
+// ===== CONFIGURATION =====
+// Model: gemini-2.0-flash (Fast, efficient, and available with current API key)
+// This is one of the most cost-effective models currently available
+const GEMINI_MODEL = 'gemini-2.0-flash';
+
+// Temperature: 0.5 (Balanced for creativity and accuracy)
+const TEMPERATURE = 0.5;
+
 // Fuzzy matching threshold (85% similarity)
 const FUZZY_THRESHOLD = 85;
+// =========================
 
 /**
  * Calls Gemini API exactly like react-ai-tool does
  * Uses the full URL approach instead of SDK
+ * Model: gemini-1.5-flash (least expensive)
+ * Temperature: 0.5
  */
 async function callGeminiAPI(prompt) {
-    // Get API URL from environment (like react-ai-tool's constants.js)
+    // Build API URL with least expensive model
     const apiUrl = process.env.GEMINI_API_URL ||
-        `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${process.env.GEMINI_API_KEY}`;
+        `https://generativelanguage.googleapis.com/v1beta/models/${GEMINI_MODEL}:generateContent?key=${process.env.GEMINI_API_KEY}`;
 
     if (!apiUrl && !process.env.GEMINI_API_KEY) {
         throw new Error('GEMINI_API_URL or GEMINI_API_KEY is not configured');
     }
 
-    // Exact same payload structure as react-ai-tool (App.jsx line 34-40)
+    // Payload with temperature configuration
     const payload = {
         contents: [
             {
                 parts: [{ text: prompt }]
             }
-        ]
+        ],
+        generationConfig: {
+            temperature: TEMPERATURE,
+            maxOutputTokens: 2048,
+        }
     };
 
     console.log(`🔄 Calling Gemini API...`);

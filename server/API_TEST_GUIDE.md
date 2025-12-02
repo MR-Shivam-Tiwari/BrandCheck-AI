@@ -71,7 +71,7 @@ npm start
 
 ```bash
 cd server
-curl http://localhost:8000/api/test-gemini-key | jq
+curl https://brand-check-ai-backend.vercel.app//api/test-gemini-key | jq
 ```
 
 **Expected Output (Success):**
@@ -186,7 +186,7 @@ If you got a new API key and it still fails:
 ## 📞 Quick Reference
 
 **Test endpoint URL:**
-- Local: `http://localhost:8000/api/test-gemini-key`
+- Local: `https://brand-check-ai-backend.vercel.app//api/test-gemini-key`
 - Returns: JSON with detailed test results
 
 **Frontend test button:**

@@ -8,11 +8,14 @@ A full-stack web application that checks if a specific brand is mentioned in a G
 
 ## 🎯 AI Model Configuration
 
-**Model**: `gemini-1.5-flash` (Fast and reliable Gemini model)
+**Model**: `gemini-2.0-flash` (Fast, efficient, cost-effective model)
 **Temperature**: `0.5` (Balanced for creativity and accuracy)
 **Fuzzy Matching**: Enabled with 85% similarity threshold
+**Error Handling**: Canned responses on API errors (app always works)
 
-These settings are hardcoded in `server/geminiService.js` for consistency and reliability.
+These settings are clearly configured at the top of `server/geminiService.js` (lines 4-14) for easy modification.
+
+📖 **See CONFIGURATION.md for detailed configuration guide**
 
 ## ✨ Features
 - **Brand Detection**: Checks if a brand is mentioned in the AI response using fuzzy matching
@@ -179,9 +182,14 @@ The app handles various brand name formats:
 
 ## ⚙️ Configuration Details
 
-- **Model**: `gemini-1.5-flash` (Hardcoded in `server/geminiService.js:22`)
-- **Temperature**: `0.5` (Hardcoded in `server/geminiService.js:24`)
-- **Fuzzy Matching Threshold**: `85%` (Hardcoded in `server/geminiService.js:32`)
+- **Model**: `gemini-2.0-flash` (Configured in `server/geminiService.js:7`)
+- **Temperature**: `0.5` (Configured in `server/geminiService.js:10`)
+- **Fuzzy Matching Threshold**: `85%` (Configured in `server/geminiService.js:13`)
+- **Canned Response**: Active on all API errors (`server/geminiService.js:199-205`)
+
+**All configuration is clearly documented at the top of geminiService.js for easy modification.**
+
+📖 **For detailed configuration guide, see `server/CONFIGURATION.md`**
 
 ## 📁 Project Structure
 
