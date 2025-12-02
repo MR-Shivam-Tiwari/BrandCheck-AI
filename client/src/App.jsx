@@ -14,32 +14,40 @@ function App() {
   const handleRun = async (prompt, brand) => {
     setIsLoading(true);
     try {
-      const API_URL = import.meta.env.VITE_API_URL || 'https://brand-check-ai-backend.vercel.app/api';
+      const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:8000/api';
       const response = await axios.post(`${API_URL}/check-brand`, {
         prompt,
         brand
       });
 
+      // Handle both success and backend-generated canned responses
       const newResult = {
         prompt,
         brand,
         mentioned: response.data.mentioned,
         position: response.data.position,
-        rawResponse: response.data.rawResponse
+        rawResponse: response.data.rawResponse,
+        error: response.data.error || false
       };
 
       setResults([newResult, ...results]);
     } catch (error) {
       console.error("Error checking brand:", error);
-      const errorResult = {
+
+      // Frontend canned response when backend is completely unreachable
+      const cannedResult = {
         prompt,
         brand,
         mentioned: false,
         position: null,
-        rawResponse: "Error: Service unavailable"
+        rawResponse: "Service is currently unavailable. This is a canned response.",
+        error: true
       };
-      setResults([errorResult, ...results]);
-      alert("An error occurred while checking. A canned response has been logged.");
+
+      setResults([cannedResult, ...results]);
+
+      // Show user-friendly notification (no intrusive alert)
+      console.log("✅ App still working - showing canned response");
     } finally {
       setIsLoading(false);
     }
