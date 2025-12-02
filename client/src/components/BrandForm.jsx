@@ -71,7 +71,7 @@ const BrandForm = ({ onRun, isLoading }) => {
                         </>
                     ) : (
                         <>
-                            <TestTube size={16} />
+                             
                             Test Gemini API Key
                         </>
                     )}
