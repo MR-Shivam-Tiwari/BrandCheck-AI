@@ -1,56 +1,69 @@
-const axios = require('axios');
+const { GoogleGenerativeAI } = require('@google/generative-ai');
 const fuzz = require('fuzzball');
+
+// Lazy initialization - create client when needed, not at module load time
+let genAI = null;
+let model = null;
+let workingModelName = null;
+
+// Try multiple models in order of preference
+const MODELS_TO_TRY = [
+    'gemini-2.0-flash',           // Newest and fastest (works with your key!)
+    'gemini-2.0-flash-exp',        // Experimental version
+    'gemini-1.5-flash',            // Fallback
+    'gemini-1.5-flash-latest',     // Alternative naming
+    'gemini-1.5-pro',              // More capable but slower
+    'gemini-pro'                   // Legacy
+];
+
+async function findWorkingModel() {
+    if (!process.env.GEMINI_API_KEY) {
+        console.error('⚠️  WARNING: GEMINI_API_KEY is not set in environment variables!');
+        console.error('Please add GEMINI_API_KEY to your .env file');
+        throw new Error('GEMINI_API_KEY is not configured');
+    }
+
+    genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
+
+    // Try each model until we find one that works
+    for (const modelName of MODELS_TO_TRY) {
+        try {
+            console.log(`🔄 Trying model: ${modelName}...`);
+            const testModel = genAI.getGenerativeModel({
+                model: modelName,
+                generationConfig: {
+                    temperature: 0.5,
+                }
+            });
+
+            // Test with a simple query
+            const result = await testModel.generateContent('Say "test" in one word');
+            await result.response;
+
+            console.log(`✅ Successfully connected using model: ${modelName}`);
+            workingModelName = modelName;
+            model = testModel;
+            return testModel;
+        } catch (error) {
+            console.log(`❌ Model ${modelName} failed: ${error.message}`);
+            continue;
+        }
+    }
+
+    // If no models work, throw error
+    throw new Error('No working Gemini models found. Please check your API key at https://aistudio.google.com/apikey');
+}
+
+async function getModel() {
+    if (!model) {
+        console.log('🔍 Finding working Gemini model...');
+        await findWorkingModel();
+    }
+    return model;
+}
 
 // Fuzzy matching threshold (85% similarity)
 const FUZZY_THRESHOLD = 85;
-
-/**
- * Calls Gemini API exactly like react-ai-tool does
- * Uses the full URL approach instead of SDK
- */
-async function callGeminiAPI(prompt) {
-    // Get API URL from environment (like react-ai-tool's constants.js)
-    const apiUrl = process.env.GEMINI_API_URL ||
-        `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${process.env.GEMINI_API_KEY}`;
-
-    if (!apiUrl && !process.env.GEMINI_API_KEY) {
-        throw new Error('GEMINI_API_URL or GEMINI_API_KEY is not configured');
-    }
-
-    // Exact same payload structure as react-ai-tool (App.jsx line 34-40)
-    const payload = {
-        contents: [
-            {
-                parts: [{ text: prompt }]
-            }
-        ]
-    };
-
-    console.log(`🔄 Calling Gemini API...`);
-    console.log(`📍 URL: ${apiUrl.substring(0, 80)}...`);
-
-    try {
-        // Using axios (similar to fetch in react-ai-tool)
-        const response = await axios.post(apiUrl, payload, {
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            timeout: 30000
-        });
-
-        // Parse response exactly like react-ai-tool (App.jsx line 50)
-        if (response.data && response.data.candidates && response.data.candidates.length > 0) {
-            const text = response.data.candidates[0].content.parts[0].text;
-            console.log(`✅ Success! Response received (${text.length} characters)`);
-            return text;
-        } else {
-            throw new Error('Invalid response structure from Gemini API');
-        }
-    } catch (error) {
-        console.error(`❌ API call failed:`, error.response?.data?.error?.message || error.message);
-        throw error;
-    }
-}
 
 /**
  * Checks if a brand name is mentioned in a text using fuzzy matching
@@ -108,28 +121,21 @@ function isBrandMentioned(text, brand) {
 
 /**
  * Checks if a brand is mentioned in the Gemini response for a given prompt.
- * Uses the exact same approach as react-ai-tool
  * @param {string} prompt - The user's prompt.
  * @param {string} brand - The brand to check for.
  * @returns {Promise<Object>} - Result containing mention status, position, and the raw response.
  */
 async function checkBrandMention(prompt, brand) {
     try {
-        console.log('\n🔍 Checking brand mention...');
-        console.log(`📝 Prompt: ${prompt.substring(0, 100)}...`);
-        console.log(`🏷️  Brand: ${brand}`);
-
-        // Call Gemini API (exactly like react-ai-tool's askQuestion function)
-        const text = await callGeminiAPI(prompt);
-
-        console.log(`📄 Response received (${text.length} characters)`);
+        const model = getModel(); // Get the lazily-initialized model
+        const result = await model.generateContent(prompt);
+        const response = await result.response;
+        const text = response.text();
 
         const mentioned = isBrandMentioned(text, brand);
         let position = null;
 
         if (mentioned) {
-            console.log(`✅ Brand "${brand}" is mentioned!`);
-
             // Attempt to determine position in a list
             const lines = text.split('\n');
             let currentPosition = 0;
@@ -145,7 +151,6 @@ async function checkBrandMention(prompt, brand) {
                     if (isBrandMentioned(line, brand)) {
                         position = currentPosition;
                         foundInList = true;
-                        console.log(`📍 Found at position: ${position}`);
                         break;
                     }
                 }
@@ -155,10 +160,7 @@ async function checkBrandMention(prompt, brand) {
             // This handles cases where the brand is mentioned in paragraphs
             if (!foundInList) {
                 position = 1;
-                console.log(`📍 Position set to: ${position} (not in a numbered list)`);
             }
-        } else {
-            console.log(`❌ Brand "${brand}" is NOT mentioned`);
         }
 
         return {
@@ -171,10 +173,11 @@ async function checkBrandMention(prompt, brand) {
         console.error("\n❌ ========== GEMINI API ERROR ==========");
         console.error("Error Type:", error.constructor.name);
         console.error("Error Message:", error.message);
+        console.error("Error Status:", error.status || 'N/A');
+        console.error("Error Code:", error.code || 'N/A');
 
         if (error.response) {
-            console.error("API Response Status:", error.response.status);
-            console.error("API Response Data:", JSON.stringify(error.response.data, null, 2));
+            console.error("API Response:", error.response);
         }
 
         if (error.stack) {

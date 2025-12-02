@@ -2,13 +2,17 @@
 
 A full-stack web application that checks if a specific brand is mentioned in a Gemini-generated response for a given prompt.
 
+## 🚨 IMPORTANT: API Key Setup Required
+
+**Before running the application**, you must set up a valid Gemini API key. See **[Quick Start](#-quick-start)** below.
+
 ## 🎯 AI Model Configuration
 
-**Model**: `gemini-1.5-flash` (Least expensive Gemini model)
+**Model**: `gemini-1.5-flash` (Fast and reliable Gemini model)
 **Temperature**: `0.5` (Balanced for creativity and accuracy)
 **Fuzzy Matching**: Enabled with 85% similarity threshold
 
-These settings are hardcoded in `server/geminiService.js` for consistency and cost optimization.
+These settings are hardcoded in `server/geminiService.js` for consistency and reliability.
 
 ## ✨ Features
 - **Brand Detection**: Checks if a brand is mentioned in the AI response using fuzzy matching
@@ -24,7 +28,47 @@ These settings are hardcoded in `server/geminiService.js` for consistency and co
 - **Backend**: Node.js, Express, Fuzzball (fuzzy matching)
 - **AI**: Google Gemini API (`gemini-1.5-flash`)
 
-## Setup & Running Locally
+## ⚡ Quick Start
+
+### 1. Get Your Gemini API Key (Required!)
+1. Visit [Google AI Studio](https://aistudio.google.com/apikey)
+2. Click **"Get API Key"** → **"Create API key in new project"**
+3. Copy your new API key
+
+### 2. Set Up Backend
+```bash
+cd server
+npm install
+cp .env.example .env
+# Edit .env and add your API key: GEMINI_API_KEY=your_key_here
+```
+
+### 3. Test API Connection
+```bash
+node test-full-flow.js
+```
+You should see: ✅ All tests passed!
+
+### 4. Start the Application
+```bash
+# Terminal 1 - Backend
+cd server
+npm start
+
+# Terminal 2 - Frontend
+cd client
+npm install
+npm run dev
+```
+
+### 5. Open Browser
+Visit http://localhost:5173 and test with:
+- **Prompt:** `Give a list of best marketing analytics tools`
+- **Brand:** `Matomo`
+
+---
+
+## 📖 Detailed Setup & Running Locally
 
 ### Prerequisites
 - Node.js installed
@@ -42,7 +86,7 @@ These settings are hardcoded in `server/geminiService.js` for consistency and co
 3. Create a `.env` file in the `server` directory and add your API Key:
    ```env
    GEMINI_API_KEY=your_api_key_here
-   PORT=3000
+   PORT=8000
    ```
 4. Start the server:
    ```bash
@@ -135,9 +179,9 @@ The app handles various brand name formats:
 
 ## ⚙️ Configuration Details
 
-- **Model**: `gemini-1.5-flash` (Hardcoded in `server/geminiService.js:5`)
-- **Temperature**: `0.5` (Hardcoded in `server/geminiService.js:7`)
-- **Fuzzy Matching Threshold**: `85%` (Hardcoded in `server/geminiService.js:13`)
+- **Model**: `gemini-1.5-flash` (Hardcoded in `server/geminiService.js:22`)
+- **Temperature**: `0.5` (Hardcoded in `server/geminiService.js:24`)
+- **Fuzzy Matching Threshold**: `85%` (Hardcoded in `server/geminiService.js:32`)
 
 ## 📁 Project Structure
 
@@ -190,17 +234,47 @@ assignment/
 
 ## 🆘 Troubleshooting
 
+**Issue**: "Service is currently unavailable" error
+- **Cause**: Invalid or expired API key, or quota limit reached
+- **Solution**:
+  1. Get a **NEW** API key from [Google AI Studio](https://aistudio.google.com/apikey)
+  2. Update your `.env` file with the new key
+  3. Run `node test-full-flow.js` to verify
+  4. See `server/SETUP_GUIDE.md` for detailed instructions
+
+**Issue**: API Key has quota limit = 0
+- **Solution**: Delete your old API key and create a completely new one in Google AI Studio
+
+**Issue**: 404 errors for gemini-pro or other models
+- **Solution**: Already fixed! We now use `gemini-1.5-flash` (updated in `server/geminiService.js:22`)
+
 **Issue**: Frontend can't connect to backend
 - **Solution**: Ensure `VITE_API_URL` environment variable is set correctly in Vercel
 
-**Issue**: "API Key not valid" error
-- **Solution**: Check that `GEMINI_API_KEY` is set in backend environment variables
+**Issue**: Extra quotes in payload (e.g., `"mailchimp"` instead of `mailchimp`)
+- **Solution**: Already fixed! Backend now strips quotes automatically (`server/routes.js:31-32`)
 
 **Issue**: CSV download not working
 - **Solution**: Check browser console for errors, ensure results table has data
 
 **Issue**: Fuzzy matching too strict/loose
-- **Solution**: Adjust `FUZZY_THRESHOLD` in `server/geminiService.js:13` (currently 85%)
+- **Solution**: Adjust `FUZZY_THRESHOLD` in `server/geminiService.js:32` (currently 85%)
+
+### Helpful Commands
+```bash
+# Test your API key
+cd server
+node test-api.js
+
+# Run full test suite
+node test-full-flow.js
+
+# Update API key interactively
+./update-api-key.sh
+
+# Check current API key (first 20 chars)
+cat .env | grep GEMINI_API_KEY
+```
 
 ## 📝 License
 
